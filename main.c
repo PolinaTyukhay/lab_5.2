@@ -8,15 +8,34 @@
 #define TRUE 1
 #define FALSE 0
 
+char newGameChoice = 0;
 int gameOver = FALSE;
-int wight = 20;
+int wight = 16;
+int Speed = 0;
+int modeGame = 0;
 int x = 0, y = 0, fruitX = 0, fruitY = 0, score = 0;
 int tailX[100], tailY[100];
 int nTail = 0;
+//int dir = 0;
 //тип перечисление (enum), задающий набор всех возможных целочисленных значений переменной этого типа. Синтаксис перечисления
 enum eDirection {STOP=0, LEFT , RIGHT, UP, DOWN};
 enum eDirection dir;
-//eDirection dir;
+
+void hidecursor()
+{
+	HANDLE hCons;
+	CONSOLE_CURSOR_INFO cci;
+	hCons = GetStdHandle(STD_OUTPUT_HANDLE);
+	cci.dwSize = 1;
+	cci.bVisible = 0;
+	SetConsoleCursorInfo(hCons, &cci);
+}
+void get_fruit() {
+	do {
+		fruitX = rand() % wight;
+		fruitY = rand() % wight;
+	} while (fruitX <= 1 || fruitX >= wight - 1 || fruitY <= 1 || fruitY >= wight - 1);
+}
 //настройка параметров
 void gotoxy(int column, int row)
 {
@@ -32,25 +51,26 @@ void Setup() {
 	dir = STOP;
 	x = wight / 2;
 	y = wight / 2;
-	do {
-		fruitX = rand() % wight;
-		fruitY = rand() % wight;
-	} while (fruitX <= 1 || fruitX >= wight-1 || fruitY <= 1 || fruitY >= wight-1);
+	get_fruit();
 	score = 0;
  }
 //
 void Draw() {
 	//system("cls");
 	gotoxy(0, 0);
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	for (int i = 0; i <= wight; i++) {
 		for (int j = 0; j <= wight; j++) {
 			if (i == 0 || j == 0 || i == wight || j == wight) {
+				SetConsoleTextAttribute(hConsole,(0 | 14));
 				printf("#");
 			}
 			else if (i == x && j == y) {
+				SetConsoleTextAttribute(hConsole, (0  | 2));
 				printf("0");
 			}
 			else if (i == fruitX && j == fruitY) {
+				SetConsoleTextAttribute(hConsole, (0  | 12));
 				printf("@");
 			}
 			else {
@@ -58,6 +78,7 @@ void Draw() {
 				for (int k = 0; k < nTail; k++) {
 					if (tailX[k] ==i && tailY[k] == j) {
 						print = TRUE;
+						SetConsoleTextAttribute(hConsole, (0  | 2));
 						printf("o");
 					}
 				}
@@ -69,7 +90,9 @@ void Draw() {
 		printf("\n");
 	}
 	printf("\n");
+	SetConsoleTextAttribute(hConsole, (0  | 7));
 	printf("Score: %d", score);
+	//dir = 1;
 }
 //получеие нажатий 
 void Input() {
@@ -142,6 +165,15 @@ void Input() {
 		case 'x':
 			gameOver = TRUE;
 			break;
+		case 'X':
+			gameOver = TRUE;
+			break;
+		case 231:
+			gameOver = TRUE;
+			break;
+		case 151:
+			gameOver = TRUE;
+			break;
 	
 		}
 	}
@@ -178,21 +210,26 @@ void Logic() {
 		y++;
 		break;
 	}
-	/*if (x > wight||x < 0||y > wight||y < 0) {
-		gameOver = TRUE;
- 
-	}*/
-	if (x >= wight) {
-		x = 0;
+	if (modeGame == 2) {
+		if (x >= wight || x <= 0 || y >= wight || y <= 0) {
+			gameOver = TRUE;
+			system("cls");
+			printf("стена   \n");
+		}
 	}
-	else if(x<0) {
-		x = wight - 1;
-	}
-	if (y >= wight) {
-		y = 0;
-	}
-	else if (y < 0) {
-		y = wight - 1;
+	else {
+		if (x >= wight) {
+			x = 1;
+		}
+		else if(x<0) {
+			x = wight - 1;
+		}
+		if (y >= wight) {
+			y = 1;
+		}
+		else if (y < 0) {
+			y = wight - 1;
+		}
 	}
 
 	for (int i = 0; i < nTail; i++) {
@@ -204,8 +241,7 @@ void Logic() {
 	}
 	if (x == fruitX && y == fruitY) {
 		score += 10;
-		fruitX = rand() % wight;
-		fruitY = rand() % wight;
+		get_fruit();
 		nTail++;
 	}
 	
@@ -214,14 +250,60 @@ int main()
 {
 	setlocale(LC_ALL, "Rus");
 	srand(time(NULL));
-	Setup();
-	//Draw();
-	while (!gameOver) {
-		Sleep(200);
-		Draw();
-		Input();
-		Logic();
+	//while (1) {
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(hConsole, (0  | 7));
+	while (1)
+	{
+		printf("Game window size (16 - 25)\n");
+		scanf_s("%d", &wight);
+		if (!(wight < 16 || wight > 25)) break;
 
 	}
+	while (1)
+	{
+		
+		printf("During the game- 'x' to exit!\nSpeed level: (1-40)\n");
+		scanf_s("%d", &Speed);
+		if (!(Speed < 1 || Speed > 40)) break;
+
+	}
+	while (1)
+	{
+
+		printf("Game mode:1)without bordes 2)with borders \n");
+		scanf_s("%d", &modeGame);
+		if (modeGame == 1 || modeGame ==2) break;
+
+	}
+	system("cls");
+	hidecursor();
+	    Setup();
+	    //Draw();
+	
+		while (!gameOver) {
+			Sleep(1000 / Speed);
+			Draw();
+			Input();
+			Logic();
+		}
+		////if (gameOver == TRUE){
+		//	while (1){
+		//		printf("U R dead ! Game over\nStart new game? (Y/N and press ENTER)\n");
+		//		scanf_s("%c", &newGameChoice);
+		//		if (newGameChoice == 'n' || newGameChoice == 'N'){
+		//			printf("Game over\n");
+		//			exit(0);
+		//		}
+		//		if (newGameChoice == 'y' || newGameChoice == 'Y') {
+		//			system("cls");
+		//			break;
+		//		}
+		//		
+		//	}
+		////}
+		//
+			
+	//}
 	return(0);
 }  

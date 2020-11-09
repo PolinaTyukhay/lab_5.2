@@ -1,4 +1,4 @@
-#include <stdio.h>
+п»ї#include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
 #include <time.h>
@@ -17,7 +17,7 @@ int x = 0, y = 0, fruitX = 0, fruitY = 0, score = 0;
 int tailX[100], tailY[100];
 int nTail = 1;
 //int dir = 0;
-//тип перечисление (enum), задающий набор всех возможных целочисленных значений переменной этого типа. Синтаксис перечисления
+//С‚РёРї РїРµСЂРµС‡РёСЃР»РµРЅРёРµ (enum), Р·Р°РґР°СЋС‰РёР№ РЅР°Р±РѕСЂ РІСЃРµС… РІРѕР·РјРѕР¶РЅС‹С… С†РµР»РѕС‡РёСЃР»РµРЅРЅС‹С… Р·РЅР°С‡РµРЅРёР№ РїРµСЂРµРјРµРЅРЅРѕР№ СЌС‚РѕРіРѕ С‚РёРїР°. РЎРёРЅС‚Р°РєСЃРёСЃ РїРµСЂРµС‡РёСЃР»РµРЅРёСЏ
 enum eDirection {STOP=0, LEFT , RIGHT, UP, DOWN};
 enum eDirection dir;
 
@@ -36,7 +36,7 @@ void get_fruit() {
 		fruitY = rand() % wight;
 	} while (fruitX <= 1 || fruitX >= wight - 1 || fruitY <= 1 || fruitY >= wight - 1);
 }
-//настройка параметров
+//РЅР°СЃС‚СЂРѕР№РєР° РїР°СЂР°РјРµС‚СЂРѕРІ
 void gotoxy(int column, int row)
 {
 	HANDLE hCons;
@@ -94,7 +94,7 @@ void Draw() {
 	printf("Score: %d", score);
 	//dir = 1;
 }
-//получеие нажатий 
+//РїРѕР»СѓС‡РµРёРµ РЅР°Р¶Р°С‚РёР№ 
 void Input() {
 	if (_kbhit()) {
 		switch (_getch())
@@ -123,7 +123,7 @@ void Input() {
 		case 'D':
 			dir = RIGHT; // right
 			break;
-		//русские маленькие 
+		//СЂСѓСЃСЃРєРёРµ РјР°Р»РµРЅСЊРєРёРµ 
 		case 230:
 			dir = UP; //up
 			break;
@@ -136,7 +136,7 @@ void Input() {
 		case 162:
 			dir = RIGHT; // right
 			break;
-		// русские большие 
+		// СЂСѓСЃСЃРєРёРµ Р±РѕР»СЊС€РёРµ 
 		case 150:
 			dir = UP; //up
 			break;
@@ -149,7 +149,7 @@ void Input() {
 		case 130:
 			dir = RIGHT; // right
 			break;
-		// стрелки 
+		// СЃС‚СЂРµР»РєРё 
 		case 72:
 			dir = UP; //up
 			break;
@@ -203,7 +203,7 @@ void Logic() {
 		if (x >= wight || x <= 0 || y >= wight || y <= 0) {
 			gameOver = TRUE;
 			system("cls");
-			printf("стена   \n");
+			printf("GAME OWER\n");
 		}
 	}
 	else {
@@ -233,7 +233,7 @@ void Logic() {
 		if (tailX[i] == x && tailY[i]==y ) {
 			gameOver = TRUE;
 			system("cls");
-			printf("столкнулись с собой  \n");
+			printf("GAME OWER \n");
 		}
 	}
 	if (x == fruitX && y == fruitY) {

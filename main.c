@@ -15,7 +15,7 @@ int Speed = 0;
 int modeGame = 0;
 int x = 0, y = 0, fruitX = 0, fruitY = 0, score = 0;
 int tailX[100], tailY[100];
-int nTail = 0;
+int nTail = 1;
 //int dir = 0;
 //тип перечисление (enum), задающий набор всех возможных целочисленных значений переменной этого типа. Синтаксис перечисления
 enum eDirection {STOP=0, LEFT , RIGHT, UP, DOWN};
@@ -182,19 +182,8 @@ void Input() {
 }
 // 
 void Logic() {
-	int prevX = tailX[0];
-	int prevY = tailY[0];
-	int prev2X = 0, prev2Y = 0;
-	tailX[0] = x;
-	tailY[0] = y;
-	for (int i = 1; i < nTail; i++ ) {
-		prev2X = tailX[i];
-		prev2Y = tailY[i];
-		tailX[i] = prevX;
-		tailY[i] = prevY;
-		prevX = prev2X;
-		prevY = prev2Y;
-	}
+	
+	
 	switch (dir)
 	{
 	case UP:
@@ -221,18 +210,26 @@ void Logic() {
 		if (x >= wight) {
 			x = 1;
 		}
-		else if(x<0) {
+		else if(x<1) {
 			x = wight - 1;
 		}
 		if (y >= wight) {
 			y = 1;
 		}
-		else if (y < 0) {
+		else if (y <1) {
 			y = wight - 1;
 		}
 	}
+	for (int i = nTail-1; i > 0; i-- ) {
+		
+		tailX[i] = tailX[i - 1];
+		tailY[i] = tailY[i - 1];
+	}
+	tailX[0] = x;
+	tailY[0] = y;
 
-	for (int i = 0; i < nTail; i++) {
+
+	for (int i = 1; i < nTail; i++) {
 		if (tailX[i] == x && tailY[i]==y ) {
 			gameOver = TRUE;
 			system("cls");
@@ -279,31 +276,17 @@ int main()
 	system("cls");
 	hidecursor();
 	    Setup();
-	    //Draw();
+	    Draw();
 	
 		while (!gameOver) {
 			Sleep(1000 / Speed);
-			Draw();
+			//Draw();
 			Input();
 			Logic();
+			Draw();
 		}
-		////if (gameOver == TRUE){
-		//	while (1){
-		//		printf("U R dead ! Game over\nStart new game? (Y/N and press ENTER)\n");
-		//		scanf_s("%c", &newGameChoice);
-		//		if (newGameChoice == 'n' || newGameChoice == 'N'){
-		//			printf("Game over\n");
-		//			exit(0);
-		//		}
-		//		if (newGameChoice == 'y' || newGameChoice == 'Y') {
-		//			system("cls");
-		//			break;
-		//		}
-		//		
-		//	}
-		////}
-		//
+	
 			
-	//}
+	
 	return(0);
 }  
